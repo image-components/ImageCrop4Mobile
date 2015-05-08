@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>ImageCrop for mobile demo</title>
+	<link rel="stylesheet" type="text/css" href="./index.css">
+	<script type="text/javascript" src="./ImageCrop.js"></script>
+</head>
+<body>
+	<div class="container">
+	</div>
+	<script type="text/javascript">
+	var ic = new ImageCrop(document.querySelector('.container'), './Lighthouse.jpg', {
+		onChanged: function(areaInfo) {
+			console.log(areaInfo);
+		}
+	});
+	</script>
+</body>
+</html>
