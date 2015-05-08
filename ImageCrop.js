@@ -280,11 +280,11 @@
 			var w = this.imgWidth + sizeChanged;
 			var h = this.imgHeight + sizeChanged;
 
-			var top = this.top - sizeChanged / 2;
-			var left = this.left - sizeChanged / 2;
+			var top = this._top - sizeChanged / 2;
+			var left = this._left - sizeChanged / 2;
 
 			this.updateImgSize(w, h);
-			this.updateImgPos(top, left);
+			this.setImgPos(top, left);
 
 			touchObj.firstX = touch2.pageX;
 			touchObj.firstY = touch2.pageY;
