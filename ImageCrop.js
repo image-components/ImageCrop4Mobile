@@ -277,11 +277,11 @@
 			var moveY = newYCenter - oldYCenter;
 
 			var sizeChanged = Math.abs(widthChange) > Math.abs(heightChange) ? widthChange : heightChange;
-			var w = this.imgWidth + widthChange;
-			var h = this.imgHeight + heightChange;
+			var w = this.imgWidth + sizeChanged;
+			var h = this.imgHeight + sizeChanged;
 
-			var top = this.top + moveY - widthChange / 2;
-			var left = this.left + moveX - heightChange / 2;
+			var top = this.top + sizeChanged / 2;
+			var left = this.left + sizeChanged / 2;
 
 			this.updateImgSize(w, h);
 			this.setImgPos(top, left);
