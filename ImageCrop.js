@@ -280,8 +280,8 @@
 			var w = this.imgWidth + sizeChanged;
 			var h = this.imgHeight + sizeChanged;
 
-			var top = this.top + sizeChanged / 2;
-			var left = this.left + sizeChanged / 2;
+			var top = this.top - sizeChanged / 2;
+			var left = this.left - sizeChanged / 2;
 
 			this.updateImgSize(w, h);
 			this.setImgPos(top, left);
