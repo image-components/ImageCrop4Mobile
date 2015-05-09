@@ -132,7 +132,7 @@
 			this._imgHeight = this.img.offsetHeight;
 
 			if (!whObj) {
-				this._updateImgSize(this._imgWidth, this._imgWidth);
+				this._updateImgSize(this._imgWidth, this._imgHeight);
 			}
 		},
 
