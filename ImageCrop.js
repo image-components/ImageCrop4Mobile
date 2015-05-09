@@ -360,6 +360,7 @@
 
 				this.container = null;
 				this.area = null;
+				this.imgStyle = null;
 				this.img = null;
 			}
 		}
