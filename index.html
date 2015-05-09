@@ -12,6 +12,8 @@
 	</div>
 	<script type="text/javascript">
 	var ic = new ImageCrop(document.querySelector('.container'), './mei.jpg', {
+		size: 200,
+		circle: true,
 		onChanged: function(areaInfo) {
 			// console.log(areaInfo);
 		}

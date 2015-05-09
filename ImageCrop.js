@@ -20,13 +20,26 @@
 		cancel: hasTouch ? 'touchcancel' : (hasPointer ? prefixPointerEvent('pointercancel') : 'mousecancel')
 	};
 
+	/**
+	 * ImageCrop constructor
+	 * @param {Element} container the container element
+	 * @param {String}  src       the image's src
+	 * @param {Object}  options   options object
+	 */
 	function ImageCrop(container, src, options) {
 		this.container = container;
 
 		if (!options) options = {};
 		this.options = {
 
+			/* crop size */
 			size: 200,
+
+			/*
+			 If true, the crop area will be rendered as an ellipse
+			 instead of a rectangle.
+			 */
+			circle: false,
 
 			onChanged: noop
 
@@ -88,7 +101,12 @@
 		initCard: function() {
 			var card = DOC.createElement('div');
 
-			card.style.cssText = 'z-index:10;position:absolute;top:50%;left:50%;width:' + this.options.size + 'px;height:' + this.options.size + 'px;overflow:hidden;-webkit-transform:translate(-50%, -50%);-moz-transform:translate(-50%, -50%);transform:translate(-50%, -50%);border:100px solid rgba(0,0,0,.8);border-width:' + this.containerHeight + 'px ' + this.containerWidth + 'px;';
+			card.style.cssText = 'z-index:10;position:absolute;top:50%;left:50%;width:' +
+				this.options.size + 'px;height:' + this.options.size + 'px;overflow:hidden;' +
+				'-webkit-transform:translate(-50%, -50%);-moz-transform:translate(-50%, -50%);' +
+				'transform:translate(-50%, -50%);border:100px solid rgba(0,0,0,.8);border-width:' +
+				this.containerHeight + 'px ' + this.containerWidth + 'px;' + (this.options.circle ?
+					'border-radius:50%;' : '');
 
 			this.card = card;
 
@@ -102,7 +120,6 @@
 
 			this.setImgSize(this.containerWidth * .8, this.containerHeight * .8);
 			this.setImgPos();
-
 		},
 
 		setImgSize: function(w, h) {

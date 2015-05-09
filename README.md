@@ -10,8 +10,19 @@ ImageCrop4Mobile is a minimalist image cropping widget with no dependences for m
 
 ```js
 var ic = new ImageCrop(document.querySelector('.container'), './mei.jpg', {
-	onChanged: function(areaInfo) {
-		console.log(areaInfo);
-	}
+  
+  /* crop size */
+  size: 200,
+  
+  /*
+   If true, the crop area will be rendered as an ellipse
+   instead of a rectangle.
+   */
+  circle: true,
+  
+  onChanged: function(areaInfo) {
+    console.log(areaInfo);
+  }
+  
 });
 ```
