@@ -38,11 +38,11 @@
 		}
 
 		this.initContainer();
-		this.initCard();
 
 		this.img = new Image();
 		var that = this;
 		this.img.onload = function() {
+			that.initCard();
 			that.originWidth = that.img.width;
 			that.originHeight = that.img.height;
 			that.imgWgtH = that.originWidth > that.originHeight;
@@ -88,7 +88,7 @@
 		initCard: function() {
 			var card = DOC.createElement('div');
 
-			card.style.cssText = 'z-index:10;position:absolute;top:50%;left:50%;width:' + this.options.size + 'px;height:' + this.options.size + 'px;overflow:hidden;;transform:translate(-50%, -50%);border:100px solid rgba(255,255,255,.8);border-width:' + this.containerHeight + 'px ' + this.containerWidth + 'px;';
+			card.style.cssText = 'z-index:10;position:absolute;top:50%;left:50%;width:' + this.options.size + 'px;height:' + this.options.size + 'px;overflow:hidden;-webkit-transform:translate(-50%, -50%);-moz-transform:translate(-50%, -50%);transform:translate(-50%, -50%);border:100px solid rgba(0,0,0,.8);border-width:' + this.containerHeight + 'px ' + this.containerWidth + 'px;';
 
 			this.card = card;
 
@@ -100,46 +100,67 @@
 		initImg: function() {
 			this.imgStyle.position = 'absolute';
 
-			this.updateImgSize(this.containerWidth * .8, this.containerHeight * .8);
-			this.updateImgPos();
+			this.setImgSize(this.containerWidth * .8, this.containerHeight * .8);
+			this.setImgPos();
 
-		},
-
-		updateImgSize: function(w, h) {
-			if (this.imgWgtH) {
-				h = 'auto';
-				w += 'px';
-			} else {
-				w = 'auto';
-				h += 'px';
-			}
-			
-			this.setImgSize(w, h);
-
-			if (this.imgWgtH) {
-				if (this.imgHeight < this.options.size) {
-					w = this.imgWidth + this.imgWidth * this.options.size / this.imgHeight;
-					w += 'px';
-					this.setImgSize(w, h);
-				}
-			} else {
-				if (this.imgWidth < this.options.size) {
-					h = this.imgHeight + this.imgHeight * this.options.size / this.imgWidth;
-					h += 'px';
-					this.setImgSize(w, h);
-				}
-			}
 		},
 
 		setImgSize: function(w, h) {
+			this._updateImgSize(w, h);
+			this.updateImgSize();
+		},
+
+		_updateImgSize: function(w, h) {
+			var whObj;
+			if (this._imgWidth) {
+				whObj = this.checkImgWH(w, h);
+				w = whObj.width;
+				h = whObj.height;
+			}
+			if (this.imgWgtH) {
+				h = 'auto';
+				w = w + 'px';
+			} else {
+				w = 'auto';
+				h = h + 'px';
+			}
+			
 			this.imgStyle.width = w;
 			this.imgStyle.height = h;
 
-			this.imgWidth = this.img.offsetWidth;
-			this.imgHeight = this.img.offsetHeight;
+			this._imgWidth = this.img.offsetWidth;
+			this._imgHeight = this.img.offsetHeight;
+
+			if (!whObj) {
+				this._updateImgSize(this._imgWidth, this._imgWidth);
+			}
 		},
 
-		updateImgPos: function(top, left) {
+		checkImgWH: function(w, h) {
+			var size = this.options.size;
+			if (this.imgWgtH) {
+				if (h < size) {
+					w = w + w * (size - h) / h;
+					h = size;
+				}
+			} else {
+				if (w < size) {
+					h = h + h * (size - w) / w;
+					w = size;
+				}
+			}
+			return {
+				width: w,
+				height: h
+			};
+		},
+
+		updateImgSize: function() {
+			this.imgWidth = this._imgWidth;
+			this.imgHeight = this._imgHeight;
+		},
+
+		setImgPos: function(top, left) {
 			if (top === undefined) {
 				top = (this.containerHeight - this.imgHeight) / 2;
 			}
@@ -147,11 +168,11 @@
 				left = (this.containerWidth - this.imgWidth) / 2;
 			}
 
-			this.setImgPos(top, left);
-			this.setPos();
+			this._updateImgPos(top, left);
+			this.updateImgPos();
 		},
 
-		setImgPos: function(top, left) {
+		_updateImgPos: function(top, left) {
 			var bounds = this.bounds;
 
 			if (top > bounds.top) {
@@ -175,6 +196,11 @@
 			this.options.onChanged.call(this, this.getAreaInfo());
 		},
 
+		updateImgPos: function() {
+			this.top = this._top;
+			this.left = this._left;
+		},
+
 		getAreaInfo: function() {
 			return {
 				top: this.bounds.top - this._top,
@@ -183,11 +209,6 @@
 				width: this.imgWidth,
 				height: this.imgHeight
 			};
-		},
-
-		setPos: function() {
-			this.top = this._top;
-			this.left = this._left;
 		},
 
 		initEvents: function() {
@@ -267,24 +288,23 @@
 			var widthChange = newDX - oldDX;
 			var heightChange = newDY - oldDY;
 
-			var oldXCenter = Math.min(touchObj.firstX, touchObj.secondX) + oldDX / 2;
-			var oldYCenter = Math.min(touchObj.firstY, touchObj.secondY) + oldDY / 2;
+			var sizeChanged = 0;
+			if (Math.abs(widthChange) > Math.abs(heightChange)) {
+				sizeChanged = widthChange;
+			} else {
+				sizeChanged = heightChange;
+			}
+			var w = this.imgWidth;
+			var h = this.imgHeight;
 
-			var newXCenter = Math.min(touch1.pageX, touch2.pageX) + newDX / 2;
-			var newYCenter = Math.min(touch1.pageY, touch2.pageY) + newDY / 2;
+			this.setImgSize(w + sizeChanged, h + sizeChanged);
 
-			var moveX = newXCenter - oldXCenter;
-			var moveY = newYCenter - oldYCenter;
+			widthChange = this.imgWidth - w;
+			heightChange = this.imgHeight - h;
+			var top = this._top - heightChange / 2;
+			var left = this._left - widthChange / 2;
 
-			var sizeChanged = Math.abs(widthChange) > Math.abs(heightChange) ? widthChange : heightChange;
-			var w = this.imgWidth + sizeChanged;
-			var h = this.imgHeight + sizeChanged;
-
-			var top = this._top - sizeChanged / 2;
-			var left = this._left - sizeChanged / 2;
-
-			this.updateImgSize(w, h);
-			this.setImgPos(top, left);
+			this._updateImgPos(top, left);
 
 			touchObj.firstX = touch2.pageX;
 			touchObj.firstY = touch2.pageY;
@@ -297,7 +317,7 @@
 			var left = this.left;
 			top += point.pageY - this.touchObj.firstY;
 			left += point.pageX - this.touchObj.firstX;
-			this.setImgPos(top, left);
+			this._updateImgPos(top, left);
 		},
 
 		onTouchEnd: function(e) {
@@ -305,14 +325,22 @@
 			this.container.removeEventListener(touchEvents.end, this, false);
 			this.container.removeEventListener(touchEvents.cancel, this, false);
 
-			this.setPos();
+			this.updateImgSize();
+			this.updateImgPos();
 		},
 
 		onResize: function() {
+			var w = this.containerWidth;
+			var h = this.containerHeight;
+
 			this.updateContainerInfo();
 
 			this.updateBounds();
 
+			var diffW = this.containerWidth - w;
+			var diffH = this.containerHeight - h;
+
+			this.setImgPos(this.top + diffH / 2, this.left + diffW / 2);
 		},
 
 		onOrientationChange: function() {
