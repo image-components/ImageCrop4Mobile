@@ -131,6 +131,7 @@
 			var whObj;
 			if (this._imgWidth) {
 				whObj = this.checkImgWH(w, h);
+				if (whObj.width === this._imgWidth || whObj.height === this._imgHeight) return;
 				w = whObj.width;
 				h = whObj.height;
 			}
