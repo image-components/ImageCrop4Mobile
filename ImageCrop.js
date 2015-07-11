@@ -287,14 +287,14 @@
 
 			if (e.touches && e.touches.length === 2) {
 				// resize and move
-				this.onReszeMove(e.touches[0], e.touches[1]);
+				this.onResizeMove(e.touches[0], e.touches[1]);
 			} else {
 				// move
 				this.onMove(e.touches ? e.touches[0] : e);
 			}
 		},
 
-		onReszeMove: function(touch1, touch2) {
+		onResizeMove: function(touch1, touch2) {
 			var touchObj = this.touchObj;
 
 			var oldDX = Math.abs(touchObj.firstX - touchObj.secondX);
